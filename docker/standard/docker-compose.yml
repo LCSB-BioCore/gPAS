@@ -34,7 +34,7 @@ services:
       - "service-type:app-srv"
       - "environment:test"
     entrypoint: /bin/bash
-    command: ["./wait-for-it.sh", "mysql:3306, "--", "./run.sh"]
+    command: ["./wait-for-it.sh", "mysql:3306", "--", "./run.sh"]
   httpd:
     image: docker-registry.lcsb.uni.lu/library/httpd:2.4
     networks:
@@ -42,7 +42,9 @@ services:
     volumes:
       - ./httpd/httpd.conf:/usr/local/apache2/conf/httpd.conf
       - ./httpd/mosaic.conf:/usr/local/apache2/conf/extra/httpd-vhosts.conf
-
+      - ./httpd/ssl.conf:/usr/local/apache2/conf/extra/httpd-ssl.conf
+      - ./httpd/server.crt:/etc/ssl/certs/server.crt
+      - ./httpd/server.key:/etc/ssl/private/server.key
 
 networks:
   mosaic:

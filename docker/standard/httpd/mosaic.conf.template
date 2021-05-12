@@ -1,5 +1,6 @@
 <IfModule mod_ssl.c>
  <VirtualHost *:443>
+    SSLEngine on
     ServerName mosaic.lcsb.uni.lu
 
     SSLProtocol all -SSLv2 -SSLv3
