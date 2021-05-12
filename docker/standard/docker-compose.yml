@@ -1,34 +1,29 @@
-version: '2'
+version: '3.8'
 services:
-
-### MySQL ###############################################
-
   mysql:
-    image: mysql:5.7
+    image: docker-registry.lcsb.uni.lu/library/mysql:5.7
     container_name: gpas-1.9.1-mysql
-    ports:
-      - "3306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: root
     volumes:
       - ./sqls:/docker-entrypoint-initdb.d
+      - mosaic_db_data:/var/lib/mysql
+    networks:
+      - mosaic
     labels:
       - "service-name:gpas"
       - "service-type:db-srv"
       - "environment:test"
-      
-### WildFly #############################################
   wildfly:
-    image: mosaicgreifswald/wildfly:18.0.1.Final-20191213
+    image: docker-registry.lcsb.uni.lu/mosaicgreifswald/wildfly:18.0.1.Final-20191213
     container_name: gpas-1.9.1-wildfly
     links:
       - "mysql:mysqldb"
-    ports:
-      - "8080:8080"
-      - "9990:9990"
+    networks:
+      - mosaic
     environment:
       WILDFLY_PASS: wildfly_password
-      JAVA_OPTS: '-server -Xms1G -Xmx6G -XX:MetaspaceSize=256M -XX:MaxMetaspaceSize=1G -XX:StringTableSize=1000003 -Djava.net.preferIPv4Stack=true -Djava.awt.headless=true -Djboss.modules.system.pkgs=org.jboss.byteman' 
+      JAVA_OPTS: ${JAVA_OPTS}
     depends_on:
       - mysql
     volumes:
@@ -39,4 +34,21 @@ services:
       - "service-type:app-srv"
       - "environment:test"
     entrypoint: /bin/bash
-    command: -c "./wait-for-it.sh mysql:3306 -t 120 && ./run.sh"
+    command: ["./wait-for-it.sh", "mysql:3306, "--", "./run.sh"]
+  httpd:
+    image: docker-registry.lcsb.uni.lu/library/httpd:2.4
+    networks:
+      - mosaic
+    volumes:
+      - ./httpd/httpd.conf:/usr/local/apache2/conf/httpd.conf
+      - ./httpd/mosaic.conf:/usr/local/apache2/conf/extra/httpd-vhosts.conf
+
+
+networks:
+  mosaic:
+    driver: bridge
+
+
+volumes:
+  mosaic_db_data:
+
