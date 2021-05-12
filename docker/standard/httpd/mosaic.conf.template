@@ -19,6 +19,10 @@
     SSLCertificateFile /etc/ssl/certs/server.crt
     SSLCertificateKeyFile /etc/ssl/private/server.key
 
+    ErrorLog /proc/self/fd/2
+    TransferLog /proc/self/fd/1
+    CustomLog /proc/self/fd/1 \
+          "%t %h %{SSL_PROTOCOL}x %{SSL_CIPHER}x \"%r\" %b"
 
     <Location />
       AuthType Basic
