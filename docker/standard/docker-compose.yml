@@ -26,9 +26,6 @@ services:
       JAVA_OPTS: ${JAVA_OPTS}
     depends_on:
       - mysql
-    volumes:
-      - ./jboss:/entrypoint-jboss-batch
-      - ./deployments:/entrypoint-deployments
     labels:
       - "service-name:gpas"
       - "service-type:app-srv"
@@ -45,6 +42,8 @@ services:
       - ./httpd/ssl.conf:/usr/local/apache2/conf/extra/httpd-ssl.conf
       - ./httpd/server.crt:/etc/ssl/certs/server.crt
       - ./httpd/server.key:/etc/ssl/private/server.key
+      - ./jboss:/entrypoint-jboss-batch
+      - ./deployments:/entrypoint-deployments
     ports:
       - 80:80
       - 443:443
