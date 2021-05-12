@@ -14,6 +14,10 @@ services:
       - "service-name:gpas"
       - "service-type:db-srv"
       - "environment:test"
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
   wildfly:
     image: docker-registry.lcsb.uni.lu/mosaicgreifswald/wildfly:18.0.1.Final-20191213
     container_name: gpas-1.9.1-wildfly
@@ -32,6 +36,10 @@ services:
       - "environment:test"
     entrypoint: /bin/bash
     command: ["./wait-for-it.sh", "mysql:3306", "--", "./run.sh"]
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
   httpd:
     image: docker-registry.lcsb.uni.lu/library/httpd:2.4
     networks:
@@ -47,6 +55,10 @@ services:
     ports:
       - 80:80
       - 443:443
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
 
 networks:
   mosaic:
