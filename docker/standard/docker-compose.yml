@@ -40,6 +40,9 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
+    volumes:
+      - ./jboss:/entrypoint-jboss-batch
+      - ./deployments:/entrypoint-deployments
   httpd:
     image: docker-registry.lcsb.uni.lu/library/httpd:2.4
     networks:
@@ -50,8 +53,6 @@ services:
       - ./httpd/ssl.conf:/usr/local/apache2/conf/extra/httpd-ssl.conf
       - ./httpd/server.crt:/etc/ssl/certs/server.crt
       - ./httpd/server.key:/etc/ssl/private/server.key
-      - ./jboss:/entrypoint-jboss-batch
-      - ./deployments:/entrypoint-deployments
     ports:
       - 80:80
       - 443:443
